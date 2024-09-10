@@ -1,0 +1,7 @@
+Explanation of the Jenkinsfile:
+
+Agent: Specifies that the build agent will use the Node.js 16 Docker image.
+Stages:
+Install Dependencies: Installs the project dependencies using npm install --save.
+Run Tests: Runs the tests defined in your Node.js project using npm test.
+Post: Displays a message after the pipeline execution.
