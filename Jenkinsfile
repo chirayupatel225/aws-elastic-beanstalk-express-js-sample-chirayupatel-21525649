@@ -11,6 +11,17 @@ pipeline {
                 sh 'npm install --save'
             }
         }
+        stage('Snyk Security Scan') {
+            steps {
+                sh 'npm install -g snyk'
+                script {
+                    def result = sh(script: 'snyk test', returnStatus: true)
+                    if (result != 0) {
+                        error "Critical vulnerabilities found! Halting the pipeline."
+                    }
+                }
+            }
+        }
         stage('Run Tests') {
             steps {
                 sh 'npm test'
@@ -19,8 +30,7 @@ pipeline {
     }
     post {
         always {
-            echo 'Pipeline finished.'
+            echo 'Pipeline Finished.'
         }
     }
 }
-

@@ -1,0 +1,9 @@
+Explanation of the Snyk Integration:
+
+Snyk Security Scan:
+Installs Snyk globally using npm install -g snyk.
+Runs snyk test to check for vulnerabilities in the project dependencies.
+
+Explanation of the Snyk Script to Halt the Pipeline:
+The script block captures the return status of the snyk test command.
+If Snyk detects vulnerabilities (i.e., returnStatus is not 0), the pipeline halts with an error message.
