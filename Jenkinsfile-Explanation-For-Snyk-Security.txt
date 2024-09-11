@@ -1,9 +1,26 @@
-Explanation of the Snyk Integration:
+Explanation of the Jenkinsfile:
 
-Snyk Security Scan:
-Installs Snyk globally using npm install -g snyk.
-Runs snyk test to check for vulnerabilities in the project dependencies.
-
-Explanation of the Snyk Script to Halt the Pipeline:
-The script block captures the return status of the snyk test command.
-If Snyk detects vulnerabilities (i.e., returnStatus is not 0), the pipeline halts with an error message.
+Agent:
+	The build agent is specified to run in a Docker container using the node:16 Docker image, with the argument -u root to run commands as the root user.
+Environment:
+	The environment section defines the SNYK_TOKEN environment variable, which is fetched using the credentials function. This token is used for authenticating with Snyk to perform security scans.
+Stages:
+	Install Dependencies:
+    	Installs the project dependencies by running npm install --save.
+    	Displays a message indicating the successful installation of dependencies.
+	Run Tests:
+    	Runs the tests defined in the Node.js project by executing npm test.
+    	Displays a message indicating the successful completion of tests.
+	Snyk Security Scan:
+	    Installs the Snyk CLI tool globally using npm install -g snyk.
+	    Optionally, authenticates Snyk using the provided SNYK_TOKEN environment variable (commented in the script).
+	    Runs a Snyk security scan with a severity threshold set to "high" using snyk test --severity-threshold=high.
+	    Displays a message indicating the completion of the security scan and encourages reviewing for any critical vulnerabilities.
+	    The script captures the return status of the snyk test command.
+	    If Snyk detects vulnerabilities (i.e., returnStatus is not 0), the pipeline halts with an error message.
+Post:
+	This block contains actions that run after the stages are completed.
+always:
+	Displays a message indicating that the pipeline execution is finished, regardless of success or failure.
+failure:
+	Displays a message if the pipeline fails, asking to review the logs for details.

@@ -5,16 +5,46 @@ pipeline {
             args '-u root'
         }
     }
+
+    environment {
+        SNYK_TOKEN = crendentials('snyk-token')
+    }
+    
     stages {
         stage('Install Dependencies') {
             steps {
-                sh 'npm install --save'
+                script {
+                    echo 'Starting to Install Project Dependencies using NPM...'
+                    sh 'npm install --save'
+                    echo 'Dependencies Intalled Successfully.'
+                }
             }
         }
+        
+        stage('Run Tests') {
+            steps {
+                script {
+                    echo 'Starting to Run Project Tests...'
+                    sh 'npm test'
+                    echo 'Tests Completed Successfully.'
+                }
+            }
+        }
+        
         stage('Snyk Security Scan') {
             steps {
-                sh 'npm install -g snyk'
                 script {
+		    echo 'Starting Snyk Security Scan...'
+                    sh 'npm install -g snyk'
+                    echo 'Snyk Installed Successfully.'
+                    
+		    // Authenticate Snyk if necessary (add your Snyk Auth Token to the ENvironment Variables)
+		    // sh 'snyk auth $SNYK)TOKEN'
+		    
+		    echo 'Running Snyk Security Scan with Severity Threshold Set to High...'
+		    sh 'snyk test --severity-threshold=high'
+		    echo 'Snyk Scan Completed. Check for Any Critical Vulnerabilities.'
+		    
                     def result = sh(script: 'snyk test', returnStatus: true)
                     if (result != 0) {
                         error "Critical vulnerabilities found! Halting the pipeline."
@@ -22,15 +52,13 @@ pipeline {
                 }
             }
         }
-        stage('Run Tests') {
-            steps {
-                sh 'npm test'
-            }
-        }
     }
     post {
         always {
-            echo 'Pipeline Finished.'
+            echo 'Pipeline Execution Finished. Check the Above Steps for Results.'
+        }
+	failure {
+	    echo 'Pipeline Execution Failed. Please Review the Logs for Details.'
         }
     }
 }
