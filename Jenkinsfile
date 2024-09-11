@@ -7,7 +7,7 @@ pipeline {
     }
 
     environment {
-        SNYK_TOKEN = crendentials('snyk-token')
+        SNYK_TOKEN = credentials('snyk-token')
     }
     
     stages {
@@ -39,7 +39,7 @@ pipeline {
                     echo 'Snyk Installed Successfully.'
                     
 		    // Authenticate Snyk if necessary (add your Snyk Auth Token to the ENvironment Variables)
-		    // sh 'snyk auth $SNYK)TOKEN'
+		    // sh 'snyk auth $SNYK_TOKEN'
 		    
 		    echo 'Running Snyk Security Scan with Severity Threshold Set to High...'
 		    sh 'snyk test --severity-threshold=high'
