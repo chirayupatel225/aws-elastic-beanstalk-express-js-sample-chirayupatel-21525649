@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'node:16'
-            args '-u root'
+            args '-u root --network container:jenkins -v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
 
