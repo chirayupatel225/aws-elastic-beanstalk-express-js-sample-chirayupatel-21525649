@@ -1,26 +1,27 @@
-Explanation of the Jenkinsfile:
-
 Agent:
-	The build agent is specified to run in a Docker container using the node:16 Docker image, with the argument -u root to run commands as the root user.
+    The build agent is configured to run in a Docker container using the node:16 Docker image.
+    The argument -u root ensures that all commands are executed as the root user inside the container.
+
 Environment:
-	The environment section defines the SNYK_TOKEN environment variable, which is fetched using the credentials function. This token is used for authenticating with Snyk to perform security scans.
+    The SNYK_TOKEN environment variable is defined using the credentials function, which securely fetches the Snyk token from the Jenkins credentials store. This token is used for authenticating with Snyk to run security scans.
+
 Stages:
-	Install Dependencies:
-    	Installs the project dependencies by running npm install --save.
-    	Displays a message indicating the successful installation of dependencies.
-	Run Tests:
-    	Runs the tests defined in the Node.js project by executing npm test.
-    	Displays a message indicating the successful completion of tests.
-	Snyk Security Scan:
-	    Installs the Snyk CLI tool globally using npm install -g snyk.
-	    Optionally, authenticates Snyk using the provided SNYK_TOKEN environment variable (commented in the script).
-	    Runs a Snyk security scan with a severity threshold set to "high" using snyk test --severity-threshold=high.
-	    Displays a message indicating the completion of the security scan and encourages reviewing for any critical vulnerabilities.
-	    The script captures the return status of the snyk test command.
-	    If Snyk detects vulnerabilities (i.e., returnStatus is not 0), the pipeline halts with an error message.
+    Install Dependencies:
+        The project dependencies are installed using the command npm ci, which ensures a clean and faster installation based on the package-lock.json file.
+        A message is displayed indicating the successful installation of dependencies.
+    Run Tests:
+        The project tests are executed using npm test.
+        After the tests run, a message is displayed indicating their successful completion.
+    Snyk Security Scan:
+        The Snyk CLI is installed globally via npm install -g snyk.
+        The Snyk tool is authenticated using the provided SNYK_TOKEN environment variable, ensuring the pipeline can perform the security scan.
+        A Snyk security scan is run with the severity threshold set to "high" (snyk test --severity-threshold=high).
+        The pipeline checks the exit status of the snyk test command. If vulnerabilities are found (non-zero status), the pipeline halts with an error message, indicating that critical vulnerabilities were detected.
+        A message is displayed encouraging users to review for any critical vulnerabilities after the scan completes.
+
 Post:
-	This block contains actions that run after the stages are completed.
-always:
-	Displays a message indicating that the pipeline execution is finished, regardless of success or failure.
-failure:
-	Displays a message if the pipeline fails, asking to review the logs for details.
+    The post block contains actions that execute after the pipeline stages, regardless of the outcome.
+    always:
+        This section always runs and displays a message indicating that the pipeline execution is complete.
+    failure:
+        If the pipeline fails (e.g., due to test failures or critical vulnerabilities), a message is displayed prompting users to review the logs for details.
