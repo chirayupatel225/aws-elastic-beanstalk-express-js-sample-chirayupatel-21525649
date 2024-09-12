@@ -36,7 +36,7 @@ pipeline {
                 script {
 		    echo 'Starting Snyk Security Scan...'
                     sh 'npm install -g snyk'
-		    sh 'npm install express@4.20.2 --save'
+		    sh 'npm install express@4.20.0 --save'
                     echo 'Snyk Installed Successfully.'
                     
 		    // Authenticate Snyk if necessary (add your Snyk Auth Token to the ENvironment Variables)
