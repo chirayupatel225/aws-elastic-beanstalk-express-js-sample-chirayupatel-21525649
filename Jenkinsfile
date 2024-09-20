@@ -46,10 +46,10 @@ pipeline {
 		    sh 'snyk test --severity-threshold=high || true'
 		    echo 'Snyk Scan Completed. Check for Any Critical Vulnerabilities.'
 		    
-                    // def result = sh(script: 'snyk test', returnStatus: true)
-                    // if (result != 0) {
-                    //     error "Critical vulnerabilities found! Halting the pipeline."
-                    // }
+                    def result = sh(script: 'snyk test', returnStatus: true)
+                    if (result != 0) {
+                        error "Critical vulnerabilities found! Halting the pipeline."
+                    }
                 }
             }
         }
